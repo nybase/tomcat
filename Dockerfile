@@ -17,6 +17,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ; \
     sed -i -e 's+SHUTDOWN+UP!2345+g' -e 's+webapps+/app/war+g' /usr/local/apache-tomcat/conf/server.xml ;\
     echo -e 'server.info=WAF\nserver.number=\nserver.built=\n' | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
     cp -rf /usr/local/apache-tomcat/conf/* /app/tomcat/conf/ ;\
+    rm -rf /tmp/* 
     
 
 EXPOSE 8080
