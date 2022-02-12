@@ -9,7 +9,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ; \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
         runit pcre-dev pcre2-dev  openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop \
         openjdk11-jdk consul vim ;\
-    mkdir -p /usr/java /app/tomcat/lib/org/apache/catalina/util/ /app/tomcat/bin /app/tomcat/conf /app/tomcat/logs /app/tomcat/temp /app/tomcat/work} ;\
+    mkdir -p /usr/java /app/tomcat/lib/org/apache/catalina/util/ /app/war /logs /app/tomcat/bin /app/tomcat/conf /app/tomcat/logs /app/tomcat/temp /app/tomcat/work ;\
     TOMCAT_VER=`curl --silent http://mirror.vorboss.net/apache/tomcat/tomcat-9/ | grep v9 | awk '{split($5,c,">v") ; split(c[2],d,"/") ; print d[1]}'` ;\
     echo $TOMCAT_VER; wget -Nnv http://mirror.vorboss.net/apache/tomcat/tomcat-9/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
     mkdir -p /usr/local/apache-tomcat; tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/apache-tomcat --strip-components 1 ;\
@@ -17,6 +17,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ; \
     sed -i -e 's+SHUTDOWN+UP!2345+g' -e 's+webapps+/app/war+g' /usr/local/apache-tomcat/conf/server.xml ;\
     echo -e 'server.info=WAF\nserver.number=\nserver.built=\n' | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
     cp -rf /usr/local/apache-tomcat/conf/* /app/tomcat/conf/ ;\
+    chown app -R /usr/local/apache-tomcat /app/tomcat /app/war /logs ;\
     rm -rf /tmp/* 
     
 
