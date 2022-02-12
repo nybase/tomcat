@@ -14,7 +14,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
     echo $TOMCAT_VER; wget -N http://mirror.vorboss.net/apache/tomcat/tomcat-9/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
     mkdir -p /usr/local/apache-tomcat; tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/apache-tomcat --strip-components 1 ;\
     rm -rf /usr/local/apache-tomcat/webapps/* || true;\ 
-    sed -i -e 's+SHUTDOWN+UP!2345+g' -e 's+webapps+/app/war+g' /usr/local/apache-tomcat/conf/server.xml
+    sed -i -e 's+SHUTDOWN+UP!2345+g' -e 's+webapps+/app/war+g' /usr/local/apache-tomcat/conf/server.xml ;\
     echo -e 'server.info=WAF\nserver.number=\nserver.built=\n' | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
     cp -rf /usr/local/apache-tomcat/conf/* /app/tomcat/conf/ ;\
     
