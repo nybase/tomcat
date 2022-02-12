@@ -22,5 +22,5 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ; \
     
 
 EXPOSE 8080
-USER app
+USER   8080
 CMD ["catalina.sh", "run"]
