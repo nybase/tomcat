@@ -8,7 +8,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ; \
     apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init gnupg libcap openssl su-exec iputils jq libc6-compat iptables tzdata \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
         runit pcre-dev pcre2-dev  openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop \
-        openjdk11-jdk consul vim ;\
+        openjdk17-jdk consul vim ;\
     mkdir -p /usr/java /app/tomcat/lib/org/apache/catalina/util/ /app/war /logs /app/tomcat/bin /app/tomcat/conf /app/tomcat/logs /app/tomcat/temp /app/tomcat/work ;\
     TOMCAT_VER=`curl --silent http://mirror.vorboss.net/apache/tomcat/tomcat-9/ | grep v9 | awk '{split($5,c,">v") ; split(c[2],d,"/") ; print d[1]}'` ;\
     echo $TOMCAT_VER; wget -Nnv http://mirror.vorboss.net/apache/tomcat/tomcat-9/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
