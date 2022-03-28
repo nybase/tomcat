@@ -23,6 +23,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ;\
     echo $TOMCAT_VER; wget -N https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
     mkdir -p /usr/local/apache-tomcat; tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/apache-tomcat --strip-components 1 ;\
     rm -rf /usr/local/apache-tomcat/webapps/* || true;\ 
+    chown app:app -R /usr/local/apache-tomcat /app ;
 
 EXPOSE 8080
 USER   8080
