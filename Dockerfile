@@ -19,8 +19,8 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ;\
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
         runit pcre-dev pcre2-dev  openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop \
         openjdk8 openjdk11-jdk openjdk17-jdk consul consul-template vim font-noto-cjk ;\
-    TOMCAT_VER=`curl --silent http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/ | grep v9 | awk '{split($5,c,">v") ; split(c[2],d,"/") ; print d[1]}'` ;\
-    echo $TOMCAT_VER; wget -N http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
+    TOMCAT_VER=`curl --silent https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/ |grep -v M| grep v9 |tail -1| awk '{split($5,c,">v") ; split(c[2],d,"/") ; print d[1]}'` ;\
+    echo $TOMCAT_VER; wget -N https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-9/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
     mkdir -p /usr/local/apache-tomcat; tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/apache-tomcat --strip-components 1 ;\
     rm -rf /usr/local/apache-tomcat/webapps/* || true;\ 
 
