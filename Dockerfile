@@ -38,7 +38,8 @@ RUN set -eux; useradd -u 8080 -o -s /bin/bash app || true ;\
     cp -rv /usr/local/apache-tomcat/conf/server.xml /app/tomcat/conf/ ;\
     sed -i -e 's@webapps@/app/war@g' -e 's@SHUTDOWN@_SHUTUP_8080@g' /app/tomcat/conf/server.xml ;\
     mkdir -p /app/jar/conf /app/jar/lib /app/jar/tmp  /app/jar/bin ;\
-    chown app:app -R /usr/local/apache-tomcat /app /logs;
+    chown app:app -R /usr/local/apache-tomcat /app /logs;\
+    yum clean all; rm -rf /tmp/* ; 
 
 EXPOSE 8080
 USER   8080
