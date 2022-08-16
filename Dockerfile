@@ -29,14 +29,16 @@ RUN set -eux; useradd -u 8080 -o -s /bin/bash app || true ;\
     yum install -y bash ca-certificates curl wget    openssl sudo iproute iputils net-tools iptables tzdata \
         procps   wget tzdata less   unzip  tcpdump   socat jq mtr psmisc logrotate   \
         pcre-devel pcre2-devel  openssh-clients luajit luarocks iperf3 atop htop iftop \
-        temurin-8-jdk  vim \
+        temurin-8-jdk  temurin-17-jdk vim \
         tomcat-native fio ;\
+    yum update -y ;\    
     TOMCAT_VER=`wget -q https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/ -O -|grep -v M| grep v8 |tail -1| awk '{split($5,c,">v") ; split(c[2],d,"/") ; print d[1]}'` ;\
     echo $TOMCAT_VER; wget -c https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
-    mkdir -p /logs /usr/local/apache-tomcat /app/war /app/tomcat/conf /app/tomcat/logs /app/tomcat/work /app/tomcat/bin ; tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/apache-tomcat --strip-components 1 ;\
+    mkdir -p /logs /usr/local/apache-tomcat /app/war /app/tomcat/conf /app/tomcat/logs /app/tomcat/work /app/tomcat/bin /app/tomcat/lib/org/apache/catalina/util ; tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/apache-tomcat --strip-components 1 ;\
     rm -rf /usr/local/apache-tomcat/webapps/* || true;\ 
     cp -rv /usr/local/apache-tomcat/conf/server.xml /app/tomcat/conf/ ;\
     sed -i -e 's@webapps@/app/war@g' -e 's@SHUTDOWN@_SHUTUP_8080@g' /app/tomcat/conf/server.xml ;\
+    echo -e "server.info=WAF\nserver.number=\nserver.built=\n" | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties
     mkdir -p /app/jar/conf /app/jar/lib /app/jar/tmp  /app/jar/bin ;\
     chown app:app -R /usr/local/apache-tomcat /app /logs;\
     yum clean all; rm -rf /tmp/* ; 
