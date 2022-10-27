@@ -26,7 +26,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ;\
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
         runit pcre-dev pcre2-dev  openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux \
         openjdk8 openjdk17-jdk consul consul-template vim font-noto-cjk ;\
-        TOMCAT_VER=`wget  -q https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-${TOMCAT_MAJOR}/ -O -|grep -v M| grep v${TOMCAT_MAJOR} |tail -1| awk '{split($5,c,">v") ; split(c[2],d,"/") ; print d[1]}'` ;\
+        TOMCAT_VER=`wget -q https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-8/ -O - | grep -v M |grep v8|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\
     echo $TOMCAT_VER;wget -c https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
     echo "app"> /etc/cron.allow  ;\
     mkdir -p /logs /usr/local/tomcat /app/tomcat/conf /app/tomcat/logs /app/tomcat/work /app/tomcat/bin /app/tomcat/lib/org/apache/catalina/util /app/lib /app/tmp /app/bin /app/war /app/jmx /app/skywalking  ; \
@@ -52,7 +52,4 @@ EXPOSE 8080
 USER   8080
 
 CMD ["catalina.sh", "run"]
-
-#CMD ["java","-cp /app/jar/conf/*;/app/jar/lib/*","org.springframework.boot.loader.WarLauncher"]
-#CMD ["java","-cp /app/jar/conf/*;/app/jar/lib/*","org.springframework.boot.loader.JarLauncher"]
 
