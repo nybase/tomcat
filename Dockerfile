@@ -38,7 +38,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ;\
     echo  "server.info=WAF\nserver.number=\nserver.built=\n" | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
     echo "<tomcat-users/>" | tee  /app/tomcat/conf/tomcat-users.xml ;\
     mkdir -p /app/war /app/lib /app/tmp  /app/bin /app/jmx ;\
-    JMX_EXPORTER_VER=`wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/maven-metadata.xml -O -|grep '<version>' jmx-v.xml | tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}'` ;\
+    JMX_EXPORTER_VER=`wget -q https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/maven-metadata.xml -O -|grep '<version>'| tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}'` ;\
     echo $JMX_EXPORTER_VER;wget -c https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VER}/jmx_prometheus_javaagent-${JMX_EXPORTER_VER}.jar -O /app/jmx/jmx_prometheus_javaagent.jar; \
     echo -e 'rules:\n- pattern: ".*"' > /app/jmx/config.yaml ;\
     echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ;\
