@@ -28,14 +28,14 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ;\
     cp -rv /usr/local/tomcat/conf/* /app/tomcat/conf/ ;\
     rm -rf /usr/local/tomcat/webapps/* /app/tomcat/conf/context.xml || true;\ 
     sed -i -e 's@webapps@/app/war@g' -e 's@SHUTDOWN@UP_8001@g' /app/tomcat/conf/server.xml ;\
-    echo  "server.info=WAF\nserver.number=\nserver.built=\n" | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
+    echo -e "server.info=WAF\nserver.number=\nserver.built=\n" | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
     echo "<tomcat-users/>" | tee  /app/tomcat/conf/tomcat-users.xml ;\
     SKYWALKING_AGENT_VER=`wget -q http://mirrors.cloud.tencent.com/apache/skywalking/java-agent/ -O - |grep '<a'|tail -1 | awk '{split($2,c,">") ; split(c[2],d,"/<") ; print d[1]}'` ;\
     wget -q -c http://mirrors.cloud.tencent.com/apache/skywalking/java-agent/$SKYWALKING_AGENT_VER/apache-skywalking-java-agent-$SKYWALKING_AGENT_VER.tgz  -P /tmp;\
     tar zxf /tmp/apache-skywalking-java-agent-$SKYWALKING_AGENT_VER.tgz -C /app/skywalking --strip-components 1 ;\
     JMX_EXPORTER_VER=`wget -q https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/maven-metadata.xml -O -|grep '<version>'| tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}'` ;\
     echo $JMX_EXPORTER_VER;wget -q -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VER}/jmx_prometheus_javaagent-${JMX_EXPORTER_VER}.jar -O /app/jmx/jmx_prometheus_javaagent.jar; \
-    echo -e 'rules:\n- pattern: ".*"' > /app/jmx/config.yaml ;\
+    echo -e 'rules:\n- pattern: ".*"\n' > /app/jmx/config.yaml ;\
     echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ;\
     chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; \
     rm -rf /tmp/* /var/cache/apk/*  ;
