@@ -3,10 +3,12 @@ FROM alpine:3.16
 ENV TZ=Asia/Shanghai LANG=UTF-8.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=8 
 ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 ENV JAVA_TOOL_OPTIONS=" -javaagent:/app/skywalking/skywalking-agent.jar -javaagent:/app/jmx/jmx_prometheus_javaagent.jar=5556:/app/jmx/config.yaml \
-      -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=5555 -Dcom.sun.management.jmxremote.rmi.port=5555 \
-      -Dcom.sun.management.jmxremote.host=0.0.0.0 -Djava.rmi.server.hostname=0.0.0.0 -Dcom.sun.management.jmxremote.authenticate=false \
-      -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -XX:InitialRAMPercentage=60.0 -XX:MaxRAMPercentage=60.0 "
+       -XX:InitialRAMPercentage=60.0 -XX:MaxRAMPercentage=60.0 -Dfile.encoding=UTF-8 "
 
+#      -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=5555 -Dcom.sun.management.jmxremote.rmi.port=5555 \
+#      -Dcom.sun.management.jmxremote.host=0.0.0.0 -Djava.rmi.server.hostname=0.0.0.0 -Dcom.sun.management.jmxremote.authenticate=false \
+#      -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false
+      
 #  SW_AGENT_COLLECTOR_BACKEND_SERVICES
 
 # https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar
