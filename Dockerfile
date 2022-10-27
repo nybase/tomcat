@@ -1,6 +1,3 @@
-#FROM apache/skywalking-java-agent:8.12.0-alpine as skywalking
-#FROM bitnami/jmx-exporter:latest as jmx
-
 FROM alpine:3.16
 
 ENV TZ=Asia/Shanghai LANG=UTF-8.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=8
@@ -27,7 +24,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ;\
         runit pcre-dev pcre2-dev  openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux \
         openjdk8 openjdk17-jdk consul consul-template vim font-noto-cjk ;\
         TOMCAT_VER=`wget -q https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-8/ -O - | grep -v M |grep v8|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\
-    echo $TOMCAT_VER;wget -c https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
+    echo $TOMCAT_VER;wget -q -c https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
     echo "app"> /etc/cron.allow  ;\
     mkdir -p /logs /usr/local/tomcat /app/tomcat/conf /app/tomcat/logs /app/tomcat/work /app/tomcat/bin /app/tomcat/lib/org/apache/catalina/util /app/lib /app/tmp /app/bin /app/war /app/jmx /app/skywalking  ; \
     tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/tomcat --strip-components 1 ;\
@@ -37,10 +34,10 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app app ;\
     echo  "server.info=WAF\nserver.number=\nserver.built=\n" | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
     echo "<tomcat-users/>" | tee  /app/tomcat/conf/tomcat-users.xml ;\
     SKYWALKING_AGENT_VER=`wget -q http://mirrors.cloud.tencent.com/apache/skywalking/java-agent/ -O - |grep '<a'|tail -1 | awk '{split($2,c,">") ; split(c[2],d,"/<") ; print d[1]}'` ;\
-    wget -c http://mirrors.cloud.tencent.com/apache/skywalking/java-agent/$SKYWALKING_AGENT_VER/apache-skywalking-java-agent-$SKYWALKING_AGENT_VER.tgz  -P /tmp;\
+    wget -q -c http://mirrors.cloud.tencent.com/apache/skywalking/java-agent/$SKYWALKING_AGENT_VER/apache-skywalking-java-agent-$SKYWALKING_AGENT_VER.tgz  -P /tmp;\
     tar zxf /tmp/apache-skywalking-java-agent-$SKYWALKING_AGENT_VER.tgz -C /app/skywalking --strip-components 1 ;\
     JMX_EXPORTER_VER=`wget -q https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/maven-metadata.xml -O -|grep '<version>'| tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}'` ;\
-    echo $JMX_EXPORTER_VER;wget -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VER}/jmx_prometheus_javaagent-${JMX_EXPORTER_VER}.jar -O /app/jmx/jmx_prometheus_javaagent.jar; \
+    echo $JMX_EXPORTER_VER;wget -q -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VER}/jmx_prometheus_javaagent-${JMX_EXPORTER_VER}.jar -O /app/jmx/jmx_prometheus_javaagent.jar; \
     echo -e 'rules:\n- pattern: ".*"' > /app/jmx/config.yaml ;\
     echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ;\
     chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; \
@@ -52,4 +49,3 @@ EXPOSE 8080
 USER   8080
 
 CMD ["catalina.sh", "run"]
-
