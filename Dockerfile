@@ -34,7 +34,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
         -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false " '\
         | tee -a /etc/profile.d/91-env.sh ;\
     echo -e 'export JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS}  ${JAVA_AGENT_PROMETHEUS_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}" '| tee -a /etc/profile.d/91-env.sh ;\
-    apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init tini gnupg libcap openssl su-exec iputils jq libc6-compat iptables tzdata \
+    apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init tini gnupg libcap openssl su-exec iputils inetutils-ftp jq libc6-compat iptables tzdata \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
         runit pcre-dev pcre2-dev openssl1.1-compat openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux \
         openjdk8 openjdk17-jdk consul-template vim  ;\
