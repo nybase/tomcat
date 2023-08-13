@@ -44,7 +44,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     mkdir -p /usr/java; ln -s /usr/lib/jvm/java-1.8-openjdk /usr/java/jvm/jdk1.8 || true; ln -s /usr/lib/jvm/java-17-openjdk /usr/java/jdk-17 || true ; \
     echo $TOMCAT_VER;wget -q -c https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
     echo "app"> /etc/cron.allow  ;\
-    mkdir -p /logs /usr/local/tomcat /app/tomcat/conf /app/tomcat/logs /app/tomcat/work /app/tomcat/bin /app/tomcat/lib/org/apache/catalina/util /app/lib /app/tmp /app/bin /app/war /app/jmx /app/skywalking  ; \
+    mkdir -p /logs /usr/local/tomcat /app/tomcat/conf /app/tomcat/logs /app/tomcat/work /app/tomcat/bin /app/tomcat/lib/org/apache/catalina/util /app/lib /app/tmp /app/bin /app/war /app/jmx /app/skywalking  /app/otel ; \
     tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/tomcat --strip-components 1 ;\
     cp -rv /usr/local/tomcat/conf/* /app/tomcat/conf/ ;\
     rm -rf /usr/local/tomcat/webapps/* /app/tomcat/conf/context.xml || true;\
@@ -57,6 +57,8 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     JMX_EXPORTER_VER=`wget -q https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/maven-metadata.xml -O -|grep '<version>'| tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}'` ;\
     echo $JMX_EXPORTER_VER;wget -q -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VER}/jmx_prometheus_javaagent-${JMX_EXPORTER_VER}.jar -O /app/jmx/jmx_prometheus_javaagent.jar; \
     echo -e 'rules:\n- pattern: ".*"\n' > /app/jmx/config.yaml ;\
+    OTEL_VER=$(wget -q https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/opentelemetry/javaagent/opentelemetry-javaagent/maven-metadata.xml -O -|grep '<version>'|grep -v -i SNAPSHOT| tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}') ;\
+    echo $OTEL_VER;wget -q -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/opentelemetry/javaagent/opentelemetry-javaagent/${OTEL_VER}/opentelemetry-javaagent-${OTEL_VER}.jar -O /app/otel/opentelemetry-javaagent.jar; \
     echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ;\
     chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; 
     
