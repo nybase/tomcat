@@ -58,7 +58,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     echo $JMX_EXPORTER_VER;wget -q -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/${JMX_EXPORTER_VER}/jmx_prometheus_javaagent-${JMX_EXPORTER_VER}.jar -O /app/jmx/jmx_prometheus_javaagent.jar; \
     echo -e 'rules:\n- pattern: ".*"\n' > /app/jmx/config.yaml ;\
     echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ;\
-    chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; \
+    chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; 
     
 
 WORKDIR /app/war
