@@ -5,6 +5,7 @@ docker image for tomcat
 ```
 docker build . -t jdk:x86-20230812
 
+docker buildx create --use
 docker buildx build --platform linux/amd64,linux/arm64 -t nybase/jdk:202308 --push .
 ```
 
