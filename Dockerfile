@@ -1,6 +1,6 @@
-FROM alpine:3.17
+FROM alpine:3.18
 
-ENV TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=8 
+ENV TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=9 
 ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 
 ENV XMX_OPTS=" -XX:InitialRAMPercentage=75.0 -XX:MaxRAMPercentage=75.0 "
@@ -36,7 +36,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     echo -e 'export JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS}  ${JAVA_AGENT_PROMETHEUS_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}" '| tee -a /etc/profile.d/91-env.sh ;\
     apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init tini gnupg libcap openssl su-exec iputils inetutils-ftp jq libc6-compat iptables tzdata \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
-        runit pcre-dev pcre2-dev openssl1.1-compat openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux \
+        runit pcre-dev pcre2-dev openssl1.1-compat openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-devel \
         openjdk8 openjdk17-jdk consul-template vim  ;\
         TOMCAT_VER=`wget -q https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-8/ -O - | grep -v M |grep v8|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\
     ln -s /usr/lib/jvm/java-1.8-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-17-openjdk /usr/lib/jvm/temurin-17-jdk || true ; \
