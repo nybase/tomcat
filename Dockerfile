@@ -38,7 +38,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
         runit pcre-dev pcre2-dev openssl1.1-compat openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-devel \
         openjdk8 openjdk17-jdk consul-template vim  ;\
-        TOMCAT_VER=`wget -q https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-8/ -O - | grep -v M |grep v8|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\
+        TOMCAT_VER=`wget -q https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-${TOMCAT_MAJO}/ -O - | grep -v M |grep v8|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\
     ln -s /usr/lib/jvm/java-1.8-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-17-openjdk /usr/lib/jvm/temurin-17-jdk || true ; \
     mkdir -p /usr/java; ln -s /usr/lib/jvm/java-1.8-openjdk /usr/java/jvm/jdk1.8 || true; ln -s /usr/lib/jvm/java-17-openjdk /usr/java/jdk-17 || true ; \
     echo $TOMCAT_VER;wget -q -c https://mirrors.cloud.tencent.com/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
