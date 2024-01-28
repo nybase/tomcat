@@ -3,6 +3,7 @@ FROM alpine:3
 ENV TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=9 
 ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 
+
 ENV XMX_OPTS=" -XX:InitialRAMPercentage=75.0 -XX:MaxRAMPercentage=75.0 "
 
 ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
