@@ -26,7 +26,7 @@ ENV JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OP
 # yum only: yum-utils createrepo crontabs curl-minimal dejavu-sans-fonts iproute java-11-openjdk-devel java-17-openjdk-devel telnet traceroute pcre-devel pcre2-devel 
 # alpine: openjdk8 openjdk11-jdk openjdk17-jdk vim font-noto-cjk consul openssl1.1-compat
 RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app ;\
-    sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories ;\
+    sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.tencent.com/g' /etc/apk/repositories ;\
     apk add --no-cache bash busybox-extras ca-certificates curl wget ;\
     echo -e 'export PATH=$JAVA_HOME/bin:$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH\nexport JMX_PORT=${JMX_PORT:-"5555"}\nexport JMX_EXPT=${JMX_EXPT:-"5556"}' | tee  /etc/profile.d/91-env.sh ;\
     echo -e "export IPV4=\$(ip route get 8.8.8.8 | grep src | awk '{print \$7}')" | tee -a /etc/profile.d/91-env.sh ;\
@@ -38,7 +38,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     echo -e 'export JAVA_OPTS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}" '| tee -a /etc/profile.d/91-env.sh ;\
     apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init tini gnupg libcap openssl su-exec iputils inetutils-ftp jq libc6-compat iptables tzdata \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
-        runit pcre-dev pcre2-dev openssl1.1-compat openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-dev \
+        runit pcre-dev pcre2-dev openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-dev \
         openjdk8 openjdk21-jdk consul-template vim  ;\
         TOMCAT_VER=`wget -q https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/ -O - | grep -v M|grep v${TOMCAT_MAJOR}|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\
     ln -s /usr/lib/jvm/java-1.8-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/temurin-21-jdk || true ; \
