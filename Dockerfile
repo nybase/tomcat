@@ -1,4 +1,4 @@
-FROM alpine:3
+FROM alpine:3.19
 
 ENV TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=9 
 ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
@@ -6,8 +6,8 @@ ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:
 
 ENV XMX_OPTS=" -XX:InitialRAMPercentage=75.0 -XX:MaxRAMPercentage=75.0 "
 
-ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
-ENV JMX_EXPT=5556 JMX_PORT=5555
+#ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
+#ENV JMX_EXPT=5556 JMX_PORT=5555
 #ENV JAVA_AGENT_PROMETHEUS_OPTS=" -javaagent:/app/jmx/jmx_prometheus_javaagent.jar=${JMX_EXPT}:/app/jmx/config.yaml"
 #ENV JAVA_AGENT_SKYWALKING_OPTS=" -javaagent:/app/skywalking/skywalking-agent.jar"
 ENV JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}"
@@ -30,8 +30,8 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     apk add --no-cache bash busybox-extras ca-certificates curl wget ;\
     echo -e 'export PATH=$JAVA_HOME/bin:$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH\nexport JMX_PORT=${JMX_PORT:-"5555"}\nexport JMX_EXPT=${JMX_EXPT:-"5556"}' | tee  /etc/profile.d/91-env.sh ;\
     echo -e "export IPV4=\$(ip route get 8.8.8.8 | grep src | awk '{print \$7}')" | tee -a /etc/profile.d/91-env.sh ;\
-    echo -e 'export JMX_HOST=${IPV4}' | tee -a /etc/profile.d/91-env.sh ;\
-    echo -e 'export JMX_OPTS=" -Dcom.sun.management.jmxremote.port=${JMX_PORT} -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}  \
+    echo -e 'export JMX_HOST1=${IPV4}' | tee -a /etc/profile.d/91-env.sh ;\
+    echo -e 'export JMX_OPTS1=" -Dcom.sun.management.jmxremote.port=${JMX_PORT} -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}  \
         -Djava.rmi.server.hostname=${JMX_HOST} -Dcom.sun.management.jmxremote.host=${JMX_HOST} \
         -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false " '\
         | tee -a /etc/profile.d/91-env.sh ;\
