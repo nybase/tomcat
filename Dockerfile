@@ -6,7 +6,7 @@ ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:
 
 ENV XMX_OPTS=" -XX:InitialRAMPercentage=75.0 -XX:MaxRAMPercentage=75.0 "
 
-#ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
+ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
 #ENV JMX_EXPT=5556 JMX_PORT=5555
 #ENV JAVA_AGENT_PROMETHEUS_OPTS=" -javaagent:/app/jmx/jmx_prometheus_javaagent.jar=${JMX_EXPT}:/app/jmx/config.yaml"
 #ENV JAVA_AGENT_SKYWALKING_OPTS=" -javaagent:/app/skywalking/skywalking-agent.jar"
