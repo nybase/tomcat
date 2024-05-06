@@ -23,8 +23,8 @@ ENV JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OP
 # https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar
 # https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar
 
-# yum only: yum-utils createrepo crontabs curl-minimal dejavu-sans-fonts iproute java-11-openjdk-devel java-17-openjdk-devel telnet traceroute pcre-devel pcre2-devel 
-# alpine: openjdk8 openjdk11-jdk openjdk17-jdk vim font-noto-cjk consul openssl1.1-compat
+# yum only: yum-utils createrepo crontabs curl-minimal dejavu-sans-fonts iproute java-11-openjdk-devel java-21-openjdk-devel telnet traceroute pcre-devel pcre2-devel 
+# alpine: openjdk8 openjdk11-jdk openjdk21-jdk vim font-noto-cjk consul openssl1.1-compat
 RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app ;\
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.tencent.com/g' /etc/apk/repositories ;\
     apk add --no-cache bash busybox-extras ca-certificates curl wget ;\
@@ -39,7 +39,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init tini gnupg libcap openssl su-exec iputils inetutils-ftp jq libc6-compat iptables tzdata \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
         runit pcre-dev pcre2-dev openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-dev \
-        openjdk8 openjdk21-jdk consul-template vim  ;\
+        openjdk8 openjdk21-jdk vim ffmpeg ffmpeg-libs ;\
         TOMCAT_VER=`wget -q https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/ -O - | grep -v M|grep v${TOMCAT_MAJOR}|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\
     ln -s /usr/lib/jvm/java-1.8-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/temurin-21-jdk || true ; \
     mkdir -p /usr/java; ln -s /usr/lib/jvm/java-1.8-openjdk /usr/java/jvm/jdk1.8 || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/java/jdk-21 || true ; \
