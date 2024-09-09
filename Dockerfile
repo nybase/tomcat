@@ -1,10 +1,10 @@
-FROM alpine:3.19
+FROM alpine:3.20
 
 ENV TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=9 
 ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 
 
-ENV XMX_OPTS=" -XX:InitialRAMPercentage=75.0 -XX:MaxRAMPercentage=75.0 "
+ENV XMX_OPTS=" -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=50.0 "
 
 ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
 #ENV JMX_EXPT=5556 JMX_PORT=5555
@@ -20,6 +20,7 @@ ENV JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OP
 
 #  SW_AGENT_COLLECTOR_BACKEND_SERVICES
 
+# https://repo1.maven.org/maven2/com/taobao/arthas/arthas-packaging/4.0.0/arthas-packaging-4.0.0-bin.zip
 # https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar
 # https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar
 
