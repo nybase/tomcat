@@ -40,7 +40,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init tini gnupg libcap openssl su-exec iputils inetutils-ftp jq libc6-compat iptables tzdata \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
         runit pcre-dev pcre2-dev openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-dev \
-        openjdk8 openjdk21-jdk vim valkey nginx ;\
+        openjdk8 openjdk21-jdk vim valkey valkey-cli redis nginx ;\
     ln -s /usr/lib/jvm/java-1.8-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/temurin-21-jdk || true ; \
     mkdir -p /usr/java; ln -s /usr/lib/jvm/java-1.8-openjdk /usr/java/jvm/jdk1.8 || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/java/jdk-21 || true ; \
     mkdir -p /logs /app ;\
