@@ -63,9 +63,9 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     echo -e 'rules:\n- pattern: ".*"\n' > /app/jmx/config.yaml ;\
     OTEL_VER=$(wget -q https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/opentelemetry/javaagent/opentelemetry-javaagent/maven-metadata.xml -O -|grep '<version>'|grep -v -i SNAPSHOT| tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}') ;\
     echo $OTEL_VER;wget -q -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/opentelemetry/javaagent/opentelemetry-javaagent/${OTEL_VER}/opentelemetry-javaagent-${OTEL_VER}.jar -O /app/otel/opentelemetry-javaagent.jar; \
-    wget -c https://arthas.aliyun.com/download/latest_version?mirror=aliyun -O /tmp/arthas-bin.zip ; unzip arthas-bin.zip -d /app/arthas ;\
+    wget -c https://arthas.aliyun.com/download/latest_version?mirror=aliyun -O /tmp/arthas-bin.zip ; unzip /tmp/arthas-bin.zip -d /app/arthas ;\
 	echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ; echo "app"> /etc/cron.allow  ;\
-    chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; 
+    chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; rm -rf /tmp/* 
     
 
 WORKDIR /app/war
