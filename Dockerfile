@@ -78,12 +78,8 @@ CMD ["catalina.sh", "run"]
 
 
 
+# docker build -f Dockerfile.jdk-alpine  -t nybase/jdk:alpine-amd64 . &&  docker push nybase/jdk:alpine-amd64
 
-#CMD ["java","-cp /app/jar/conf/*;/app/jar/lib/*","org.springframework.boot.loader.WarLauncher"]
-#CMD ["java","-cp /app/jar/conf/*;/app/jar/lib/*","org.springframework.boot.loader.JarLauncher"]
-
-# docker build -f Dockerfile.jdk-apline  -t nybase/jdk:apline-amd64 . &&  docker push nybase/jdk:apline-amd64
-
-# docker build -f Dockerfile.jdk-apline  -t nybase/jdk:apline-arm64 . &&  docker push nybase/jdk:apline-arm64
+# docker build -f Dockerfile.jdk-alpine  -t nybase/jdk:alpine-arm64 . &&  docker push nybase/jdk:alpine-arm64
 
 # docker run -ti  -e SW_AGENT_COLLECTOR_BACKEND_SERVICES=skywalking:11800 -e JAVA_OPTS="-javaagent:/app/skywalking/skywalking-agent.jar" nybase/jdk:apline-amd64 bash
