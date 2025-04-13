@@ -39,7 +39,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     echo -e 'export JAVA_OPTS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}" '| tee -a /etc/profile.d/91-env.sh ;\
     apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init tini gnupg libcap openssl su-exec sudo iputils inetutils-ftp jq gcompat iptables tzdata \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
-        runit pcre-dev pcre2-dev openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-dev \
+        runit pcre-dev pcre2-dev openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-dev monit \
         openjdk8 openjdk21-jdk vim valkey valkey-cli redis nginx ;\
 	chmod u+s /bin/ping /usr/bin/tcpdump   ||true; \
     ln -s /usr/lib/jvm/java-1.8-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/temurin-21-jdk || true ; \
