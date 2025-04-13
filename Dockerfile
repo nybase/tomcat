@@ -52,7 +52,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     cp -rv /usr/local/tomcat/conf/* /app/tomcat/conf/ ;\
     rm -rf /usr/local/tomcat/webapps/* /app/tomcat/conf/context.xml || true;\
     sed -i -e 's@webapps@/app/war@g' -e 's@SHUTDOWN@UP_8001@g' /app/tomcat/conf/server.xml ;\
-    sed -i -e 's/maxParameterCount="1000"$/maxParameterCount="1000" maxHttpHeaderSize="65536"  maxConnections="16384" \n maxThreads="1500" minSpareThreads="25" \
+    sed -i -e 's/maxParameterCount="1000"$/maxParameterCount="1000" maxHttpHeaderSize="65536"  maxConnections="16384" \n maxThreads="2000" minSpareThreads="10" \
     maxSpareThreads="75"  acceptCount="1500" \n keepAliveTimeout="30000" enableLookups="false"  disableUploadTimeout="true"/g'  /app/tomcat/conf/server.xml;\
     echo -e "server.info=WAF\nserver.number=\nserver.built=\n" | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
     echo "<tomcat-users/>" | tee  /app/tomcat/conf/tomcat-users.xml ;\
