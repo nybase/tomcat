@@ -1,10 +1,10 @@
-FROM --platform=$TARGETPLATFORM alpine:3.21
+FROM --platform=$TARGETPLATFORM alpine:3.22
 
 ENV TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=9 
 ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
 
 
-ENV XMX_OPTS=" -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=50.0 "
+ENV XMX_OPTS=" -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=60.0 "
 
 ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
 #ENV JMX_EXPT=5556 JMX_PORT=5555
