@@ -1,23 +1,21 @@
-#FROM --platform=$TARGETPLATFORM alpine:3.22
-
-FROM scratch
+FROM --platform=${BUILDPLATFORM:-linux/amd64} scratch
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETPLATFORM
-ADD kylin-rootfs-v11-x86_64.tar.xz /
-RUN dnf install -y vim curl wget && echo $TARGETARCH 
 
-ENV TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=9 
-ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+#ADD kylin-rootfs-v11-amd64.tar.xz /
+ADD  kylin-rootfs-v11-${TARGETARCH}.tar.xz /
 
+#ENV TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=9
+#ENV PATH=$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+#ENV XMX_OPTS=" -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=60.0 "
+#ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
 
-ENV XMX_OPTS=" -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=60.0 "
-
-ENV SW_AGENT_COLLECTOR_BACKEND_SERVICES=127.0.0.1:11800
 #ENV JMX_EXPT=5556 JMX_PORT=5555
 #ENV JAVA_AGENT_PROMETHEUS_OPTS=" -javaagent:/app/jmx/jmx_prometheus_javaagent.jar=${JMX_EXPT}:/app/jmx/config.yaml"
 #ENV JAVA_AGENT_SKYWALKING_OPTS=" -javaagent:/app/skywalking/skywalking-agent.jar"
-ENV JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}"
+
+#ENV JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}"
 
 
 # ENV JAVA_TOOL_OPTIONS=" -javaagent:/app/skywalking/skywalking-agent.jar -javaagent:/app/jmx/jmx_prometheus_javaagent.jar=5556:/app/jmx/config.yaml \
@@ -31,28 +29,35 @@ ENV JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OP
 # https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar
 # https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.2/jmx_prometheus_javaagent-0.17.2.jar
 
-# yum only: yum-utils createrepo crontabs curl-minimal dejavu-sans-fonts iproute java-11-openjdk-devel java-21-openjdk-devel telnet traceroute pcre-devel pcre2-devel 
+# yum only: yum-utils createrepo crontabs curl-minimal dejavu-sans-fonts iproute java-1.8.0-openjdk-devel java-11-openjdk-devel java-21-openjdk-devel telnet traceroute pcre-devel pcre2-devel
+# yum miss:  busybox-extras iproute2 runit dumb-init tini su-exec inetutils-ftp pcre-dev pcre2-dev openssh-client-default atop jemalloc-dev yum-utils curl-minimal java-8-openjdk-devel valkey valkey-cli
 # alpine: openjdk8 openjdk11-jdk openjdk21-jdk vim font-noto-cjk consul openssl1.1-compat
-RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app ;\
-    sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.tencent.com/g' /etc/apk/repositories ;\
-    apk add --no-cache bash busybox-extras ca-certificates curl wget ;\
-    echo -e 'export PATH=$JAVA_HOME/bin:$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH\nexport JMX_PORT=${JMX_PORT:-"5555"}\nexport JMX_EXPT=${JMX_EXPT:-"5556"}' | tee  /etc/profile.d/91-env.sh ;\
+RUN set -eux; adduser -u 8080 -m -s /bin/bash app ;mkdir -p /logs /app /usr/java/jvm ;\
+    test -f /etc/apk/repositories && sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.tencent.com/g' /etc/apk/repositories || true ;\
+    dnf install -y bash  ca-certificates curl wget ;\
+    echo -e 'export TZ=Asia/Shanghai LANG=en_US.UTF-8 UMASK=0022 CATALINA_HOME=/usr/local/tomcat CATALINA_BASE=/app/tomcat TOMCAT_MAJOR=9' | tee /etc/profile.d/91-env.sh ;\
+    echo -e 'export PATH=$JAVA_HOME/bin:/usr/local/tomcat/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH\nexport JMX_PORT=${JMX_PORT:-"5555"}\nexport JMX_EXPT=${JMX_EXPT:-"5556"}' | tee -a /etc/profile.d/91-env.sh ;\
     echo -e "export IPV4=\$(ip route get 8.8.8.8 | grep src | awk '{print \$7}')" | tee -a /etc/profile.d/91-env.sh ;\
+    echo -e 'export XMX_OPTS=" -XX:InitialRAMPercentage=50.0 -XX:MaxRAMPercentage=60.0 " ' | tee -a /etc/profile.d/91-env.sh ;\
+    echo -e 'export JDK_JAVA_OPTIONS=" -XX:+IgnoreUnrecognizedVMOptions --enable-native-access=ALL-UNNAMED " ' | tee -a /etc/profile.d/91-env.sh ;\
     echo -e 'export JMX_HOST1=${IPV4}' | tee -a /etc/profile.d/91-env.sh ;\
     echo -e 'export JMX_OPTS1=" -Dcom.sun.management.jmxremote.port=${JMX_PORT} -Dcom.sun.management.jmxremote.rmi.port=${JMX_PORT}  \
         -Djava.rmi.server.hostname=${JMX_HOST} -Dcom.sun.management.jmxremote.host=${JMX_HOST} \
         -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false " '\
         | tee -a /etc/profile.d/91-env.sh ;\
-    echo -e 'export JAVA_OPTS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}" '| tee -a /etc/profile.d/91-env.sh ;\
-    apk add --no-cache bash busybox-extras ca-certificates curl wget iproute2 runit dumb-init tini gnupg libcap openssl su-exec sudo iputils inetutils-ftp jq gcompat iptables tzdata \
+    echo -e 'export JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OPTS} ${JAVA_AGENT_SKYWALKING_OPTS}" ' | tee -a /etc/profile.d/91-env.sh ;\
+    source /etc/profile.d/91-env.sh ; echo $TOMCAT_MAJOR; \
+    dnf --enablerepo=temurin install temurin-24-jdk java-21-openjdk-devel ;\
+    dnf install -y bash ca-certificates curl wget iproute  gnupg libcap openssl  sudo iputils  jq  iptables tzdata \
         procps  iputils  wget tzdata less   unzip  tcpdump  net-tools socat jq mtr psmisc logrotate  tomcat-native \
-        runit pcre-dev pcre2-dev openssh-client-default  luajit luarocks iperf3 wrk atop htop iftop tmux jemalloc-dev monit \
-        openjdk8 openjdk21-jdk vim valkey valkey-cli redis nginx ;\
-	chmod u+s /bin/ping /usr/bin/tcpdump   ||true; \
-    ln -s /usr/lib/jvm/java-1.8-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/temurin-21-jdk || true ; \
-    mkdir -p /usr/java; ln -s /usr/lib/jvm/java-1.8-openjdk /usr/java/jvm/jdk1.8 || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/java/jdk-21 || true ; \
-    mkdir -p /logs /app ;\
-    TOMCAT_VER=`wget -q https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/ -O - | grep -v M|grep v${TOMCAT_MAJOR}|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\
+        htop iftop tmux   \
+        createrepo crontabs dejavu-sans-fonts iproute java-21-openjdk-devel telnet traceroute pcre-devel pcre2-devel vim redis java-1.8.0-openjdk-devel  ;\
+        chmod u+s /bin/ping /usr/bin/tcpdump   ||true; \
+    test -d /usr/lib/jvm/java-1.8-openjdk  && ln -s /usr/lib/jvm/java-1.8-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/temurin-21-jdk || true ; \
+    test -d /usr/lib/jvm/java-1.8.0-openjdk  && ln -s /usr/lib/jvm/java-1.8.0-openjdk /usr/lib/jvm/temurin-8-jdk || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/lib/jvm/temurin-21-jdk || true ; \
+    test -d /usr/lib/jvm/java-1.8-openjdk  &&  ln -s /usr/lib/jvm/java-1.8-openjdk /usr/java/jvm/jdk1.8 || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/java/jdk-21 || true ; \
+    test -d /usr/lib/jvm/java-1.8.0-openjdk  &&  ln -s /usr/lib/jvm/java-1.8.0-openjdk /usr/java/jvm/jdk1.8 || true; ln -s /usr/lib/jvm/java-21-openjdk /usr/java/jdk-21 || true ; \
+    TOMCAT_VER=`wget -q https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/ -O - | grep -v M|grep v${TOMCAT_MAJOR}|tail -1|awk '{split($0,c,"<a") ; split(c[2],d,"/") ;split(d[1],e,"v") ; print e[2]}'` ;\       
     echo $TOMCAT_VER;wget -q -c https://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VER}/bin/apache-tomcat-${TOMCAT_VER}.tar.gz -P /tmp ;\
     mkdir -p /logs /usr/local/tomcat /app/tomcat/conf /app/tomcat/logs /app/tomcat/work /app/tomcat/bin /app/tomcat/lib/org/apache/catalina/util /app/lib /app/tmp /app/bin /app/war /app/jmx /app/skywalking  /app/otel ; \
     tar zxf /tmp/apache-tomcat-${TOMCAT_VER}.tar.gz -C /usr/local/tomcat --strip-components 1 ;\
@@ -60,7 +65,7 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     rm -rf /usr/local/tomcat/webapps/* /app/tomcat/conf/context.xml || true;\
     sed -i -e 's@webapps@/app/war@g' -e 's@SHUTDOWN@UP_8001@g' /app/tomcat/conf/server.xml ;\
     sed -i -e 's/maxParameterCount="1000"$/maxParameterCount="1000" maxHttpHeaderSize="65536"  maxConnections="16384" \n maxThreads="2000" minSpareThreads="10" \
-    maxSpareThreads="75"  acceptCount="1500" \n keepAliveTimeout="30000" enableLookups="false"  disableUploadTimeout="true"/g'  /app/tomcat/conf/server.xml;\
+    maxIdleThreads="75"  acceptCount="1500" \n keepAliveTimeout="30000" enableLookups="false"  disableUploadTimeout="true"/g'  /app/tomcat/conf/server.xml;\
     echo -e "server.info=WAF\nserver.number=\nserver.built=\n" | tee /app/tomcat/lib/org/apache/catalina/util/ServerInfo.properties ;\
     echo "<tomcat-users/>" | tee  /app/tomcat/conf/tomcat-users.xml ;\
     SKYWALKING_AGENT_VER=`wget -q http://mirrors.cloud.tencent.com/apache/skywalking/java-agent/ -O - |grep 'href'|tail -1 | awk '{split($2,c,">") ; split(c[2],d,"/<") ; print d[1]}'` ;\
@@ -72,9 +77,9 @@ RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app 
     OTEL_VER=$(wget -q https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/opentelemetry/javaagent/opentelemetry-javaagent/maven-metadata.xml -O -|grep '<version>'|grep -v -i SNAPSHOT| tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}') ;\
     echo $OTEL_VER;wget -q -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/opentelemetry/javaagent/opentelemetry-javaagent/${OTEL_VER}/opentelemetry-javaagent-${OTEL_VER}.jar -O /app/otel/opentelemetry-javaagent.jar; \
     wget -c https://arthas.aliyun.com/download/latest_version?mirror=aliyun -O /tmp/arthas-bin.zip ; unzip /tmp/arthas-bin.zip -d /app/arthas ;\
-	echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ; echo "app"> /etc/cron.allow  ;\
-    chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; rm -rf /tmp/* 
-    
+        echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ; echo "app"> /etc/cron.allow  ;\
+    chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; rm -rf /tmp/*
+
 
 WORKDIR /app/war
 
