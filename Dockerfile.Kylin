@@ -92,6 +92,8 @@ RUn     dnf install -y bash ca-certificates curl wget tar jq iproute  gnupg libc
     mkdir -p /logs /usr/local/tomcat /app/tomcat/conf /app/tomcat/logs /app/tomcat/work /app/tomcat/bin /app/tomcat/lib/org/apache/catalina/util /app/lib /app/tmp /app/bin /app/war /app/jmx /app/skywalking  /app/otel ; \
     echo "set mouse-=a" >> ~/.vimrc ;  echo "set mouse-=a" >> /home/app/.vimrc ; echo "app"> /etc/cron.allow  ;\
     rm -rf /usr/lib/jvm/java-21-openjdk/lib/src.zip /usr/lib/jvm/java-1.8.0-openjdk/src.zip ;\
+    rm -rf /usr/share/doc /var/cache/dnf/* /root/.rpmdb ;\
+    rpm --root=/  -qa |egrep '(help|perl|qt5-qtbase|gtk2|librados2|openssh-server|google-noto|cracklib|libX|gtk-update-icon-cache|qt5-srpm-macros|cups-libs)' | xargs rpm --root=/ -ev --nodeps;\
     chown app:app -R /usr/local/tomcat /app /logs /home/app/.vimrc ; rm -rf /tmp/*
 
 
