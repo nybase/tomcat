@@ -27,6 +27,7 @@ ENV JAVA_TOOL_OPTIONS="${JAVA_OPTS} ${JAVA_EXT_OPTS} ${XMX_OPTS} ${JAVA_AGENT_OP
 # yum only: yum-utils createrepo crontabs curl-minimal dejavu-sans-fonts iproute java-11-openjdk-devel java-21-openjdk-devel telnet traceroute pcre-devel pcre2-devel 
 # alpine: openjdk8 openjdk11-jdk openjdk21-jdk vim font-noto-cjk consul openssl1.1-compat
 RUN set -eux; addgroup -g 8080 app ; adduser -u 8080 -S -G app -s /bin/bash app ;\
+    mkdir -p /etc/sudoers.d;echo "app ALL = (root) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/app;chmod 0440 /etc/sudoers.d/* ;\
     sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloud.tencent.com/g' /etc/apk/repositories ;\
     apk add --no-cache bash busybox-extras ca-certificates curl wget ;\
     echo -e 'export PATH=$JAVA_HOME/bin:$CATALINA_HOME/bin:/usr/java/latest/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH\nexport JMX_PORT=${JMX_PORT:-"5555"}\nexport JMX_EXPT=${JMX_EXPT:-"5556"}' | tee  /etc/profile.d/91-env.sh ;\
