@@ -65,7 +65,7 @@ RUn     dnf install -y bash ca-certificates curl wget tar jq iproute  gnupg libc
     echo -e 'rules:\n- pattern: ".*"\n' > /app/jmx/config.yaml ;\
     OTEL_VER=$(wget -q https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/opentelemetry/javaagent/opentelemetry-javaagent/maven-metadata.xml -O -|grep '<version>'|grep -v -i SNAPSHOT| tail -1 | awk '{split($1,c,">") ; split(c[2],d,"<") ; print d[1]}') ;\
     echo $OTEL_VER;wget -q -c https://mirrors.cloud.tencent.com/nexus/repository/maven-public/io/opentelemetry/javaagent/opentelemetry-javaagent/${OTEL_VER}/opentelemetry-javaagent-${OTEL_VER}.jar -O /app/otel/opentelemetry-javaagent.jar; \
-    wget -c https://arthas.aliyun.com/download/latest_version?mirror=aliyun -O /tmp/arthas-bin.zip ; unzip /tmp/arthas-bin.zip -d /app/arthas ;\
+    wget -q -c https://arthas.aliyun.com/download/latest_version?mirror=aliyun -O /tmp/arthas-bin.zip ; unzip /tmp/arthas-bin.zip -d /app/arthas ;\
     ls -alh /tmp;
 
 
